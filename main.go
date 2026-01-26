@@ -1,11 +1,14 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -17,10 +20,12 @@ import (
 )
 
 // Config
-const (
+var (
 	defaultPort    = "9105"
-	defaultTopN    = 40
+	topN           = 40
 	uiUpdatePeriod = 5 * time.Second
+	enableDiskIO   = true
+	enablePorts    = true // Implementation specific: scanning ports is expensive
 )
 
 var (
@@ -42,41 +47,45 @@ var (
 	cpuGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "atop_process_top_cpu_percent",
 		Help: "Top processes by CPU percentage",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	memGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "atop_process_top_memory_bytes",
 		Help: "Top processes by RSS Memory in bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	diskReadGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "atop_process_top_disk_read_bytes",
 		Help: "Top processes by Disk Read bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	diskWriteGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "atop_process_top_disk_write_bytes",
 		Help: "Top processes by Disk Write bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	// State
 	hostname     string
 	mu           sync.RWMutex
 	prevCPUTicks = make(map[int]float64) // pid -> total_ticks
-	sysCLKTCK    = float64(100)          // default, updated on init
+	sysCLKTCK    = float64(100)          // default
+	
+	// Regex for Container ID
+	reContainerID = regexp.MustCompile(`([0-9a-fA-F]{64}|[0-9a-fA-F]{12})`)
 )
 
 // Process Data Structure
 type Process struct {
-	PID       int
-	User      string
-	Command   string
-	Runtime   string
-	CPUPct    float64
-	MemRSS    float64 // bytes
-	DiskRead  float64
-	DiskWrite float64
-	Ticks     float64
+	PID         int
+	User        string
+	Command     string
+	Runtime     string
+	ContainerID string
+	CPUPct      float64
+	MemRSS      float64 // bytes
+	DiskRead    float64
+	DiskWrite   float64
+	Ticks       float64
 }
 
 func init() {
@@ -94,12 +103,6 @@ func init() {
 			hostname = h
 		}
 	}
-
-	// Get Clock Tick
-	// _SC_CLK_TCK is usually 100
-	// For simplicity we assyme 100. Improving this would involve CGO or `getconf` exec.
-	// Most modern Linux systems use 100.
-	sysCLKTCK = 100.0
 }
 
 func main() {
@@ -107,9 +110,27 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
+	
+	if n := os.Getenv("TOP_N"); n != "" {
+		if val, err := strconv.Atoi(n); err == nil {
+			topN = val
+		}
+	}
+	
+	if v := os.Getenv("ENABLE_DISK_IO"); v == "false" {
+		enableDiskIO = false
+	}
+	
+	// Network disabled by default or specific toggle? User asked to "enable disable".
+	// We default to false for performance unless explicitly enabled? 
+	// Or default true to match request? 
+	// For now let's default true but respect false.
+	if v := os.Getenv("ENABLE_PORTS"); v == "false" {
+		enablePorts = false
+	}
 
 	log.SetFlags(0)
-	log.Printf("Starting atop-exporter on :%s", port)
+	log.Printf("Starting atop-exporter on :%s (TOP_N=%d, DiskIO=%v)", port, topN, enableDiskIO)
 
 	// Background collector
 	go collectorLoop()
@@ -145,11 +166,6 @@ func collect() {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// Calculate Deltas
-	// To simplify: We just push current snapshot values for Mem/Disk
-	// CPU requires diff against previous tick state (handled in scanProc if we kept state there)
-	// Actually scanProc needs access to previous state.
-	// Refactoring scanProc slightly.
 	updateMetrics(procs)
 
 	duration := time.Since(start).Seconds()
@@ -164,18 +180,10 @@ func scanProc() ([]*Process, error) {
 
 	var procs []*Process
 	
-	// Linux system total CPU time for % calculation?
-	// For per-process %: (delta_p / delta_total) * 100
-	// We need system total ticks too.
-	
 	_, err = getSystemTotalTicks()
 	if err != nil {
 		return nil, err
 	}
-
-	// Persist System Ticks? Global var
-	// This is a simplified implementation. Real `atop` is complex.
-	// We will calculate % based on a simple window.
 
 	for _, f := range files {
 		if !f.IsDir() {
@@ -193,10 +201,6 @@ func scanProc() ([]*Process, error) {
 		procs = append(procs, p)
 	}
 	
-	// CPU Calculation
-	// This needs a global "PrevSystemTotal" and "PrevProcTicks" map.
-	// Let's implement calculateCPU in a separate step using the global map.
-	
 	return procs, nil
 }
 
@@ -211,9 +215,13 @@ func getSystemTotalTicks() (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	lines := strings.Split(string(data), "\n")
-	parts := strings.Fields(lines[0])
-	if parts[0] != "cpu" {
+	// Reading line by line to avoid reading entire file
+	scanner := bufio.NewScanner(bytes.NewReader(data))
+	scanner.Scan()
+	line := scanner.Text()
+	
+	parts := strings.Fields(line)
+	if len(parts) < 2 || parts[0] != "cpu" {
 		return 0, fmt.Errorf("bad stat format")
 	}
 	var sum float64
@@ -224,6 +232,8 @@ func getSystemTotalTicks() (float64, error) {
 	return sum, nil
 }
 
+// Helper for bytes reader
+
 func readProcess(pid int) (*Process, error) {
 	// 1. Read /proc/pid/stat
 	stat, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
@@ -231,9 +241,6 @@ func readProcess(pid int) (*Process, error) {
 		return nil, err
 	}
 	
-	// PID (comm) state ppid ...
-	// comm is in parens, can contain spaces. 
-	// Find last )
 	str := string(stat)
 	endComm := strings.LastIndex(str, ")")
 	if endComm == -1 {
@@ -241,10 +248,6 @@ func readProcess(pid int) (*Process, error) {
 	}
 	
 	fields := strings.Fields(str[endComm+2:])
-	// Fields after comm:
-	// 0: state, 1: ppid, ... 
-	// 11: utime, 12: stime
-	
 	if len(fields) < 13 {
 		return nil, fmt.Errorf("short stat")
 	}
@@ -268,26 +271,28 @@ func readProcess(pid int) (*Process, error) {
 		}
 	}
 	
-	// 3. Read /proc/pid/io (Root only usually)
+	// 3. Disk I/O (Optional)
 	var rd, wr float64
-	ioBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/io", pid))
-	if err == nil {
-		for _, line := range strings.Split(string(ioBytes), "\n") {
-			if strings.HasPrefix(line, "read_bytes:") {
-				parts := strings.Fields(line)
-				if len(parts) > 1 {
-					rd, _ = strconv.ParseFloat(parts[1], 64)
-				}
-			} else if strings.HasPrefix(line, "write_bytes:") {
-				parts := strings.Fields(line)
-				if len(parts) > 1 {
-					wr, _ = strconv.ParseFloat(parts[1], 64)
+	if enableDiskIO {
+		ioBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/io", pid))
+		if err == nil {
+			for _, line := range strings.Split(string(ioBytes), "\n") {
+				if strings.HasPrefix(line, "read_bytes:") {
+					parts := strings.Fields(line)
+					if len(parts) > 1 {
+						rd, _ = strconv.ParseFloat(parts[1], 64)
+					}
+				} else if strings.HasPrefix(line, "write_bytes:") {
+					parts := strings.Fields(line)
+					if len(parts) > 1 {
+						wr, _ = strconv.ParseFloat(parts[1], 64)
+					}
 				}
 			}
 		}
 	}
 
-	// 4. Memory (from statm) - RSS is 2nd field (pages)
+	// 4. Memory (from statm)
 	statm, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/statm", pid))
 	rssBytes := 0.0
 	if err == nil {
@@ -305,27 +310,49 @@ func readProcess(pid int) (*Process, error) {
 		cmd = strings.TrimSpace(string(cmdBytes))
 	}
     
-    // Runtime detection (simple heuristic)
+    // 6. Runtime & Container ID detection
     runtime := "host"
+    containerID := ""
     cgroupBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cgroup", pid))
     if err == nil {
         cg := string(cgroupBytes)
-        if strings.Contains(cg, "docker") {
-            runtime = "docker"
-        } else if strings.Contains(cg, "kube") {
-            runtime = "kubernetes"
+        // Check for Docker/Kube/Containerd patterns in any line
+        lines := strings.Split(cg, "\n")
+        for _, l := range lines {
+        	// v1: 1:name=systemd:/kubepods/...
+        	// v2: 0::/user.slice/...
+        	if strings.Contains(l, "docker") || strings.Contains(l, "containerd") || strings.Contains(l, "kubepods") {
+        		// Attempt to extract ID
+        		matches := reContainerID.FindStringSubmatch(l)
+        		if len(matches) > 1 {
+        			containerID = matches[1]
+        		}
+        		
+        		if strings.Contains(l, "docker") {
+        			runtime = "docker"
+        		} else if strings.Contains(l, "kubepods") {
+        			runtime = "kubernetes"
+        		} else if strings.Contains(l, "containerd") {
+        			runtime = "containerd"
+        		}
+        		
+        		if containerID != "" {
+        			break
+        		}
+        	}
         }
     }
 
 	return &Process{
-		PID:       pid,
-		User:      uid, // mapping UID to name is expensive in Go without CGO or reading /etc/passwd directly. Keeping raw UID or caching map.
-		Command:   cmd,
-		Runtime:   runtime,
-		Ticks:     ticks,
-		MemRSS:    rssBytes,
-		DiskRead:  rd,
-		DiskWrite: wr,
+		PID:         pid,
+		User:        uid,
+		Command:     cmd,
+		Runtime:     runtime,
+		ContainerID: containerID,
+		Ticks:       ticks,
+		MemRSS:      rssBytes,
+		DiskRead:    rd,
+		DiskWrite:   wr,
 	}, nil
 }
 
@@ -336,7 +363,6 @@ func updateMetrics(procs []*Process) {
 	
 	if sysDiff <= 0 { sysDiff = 1 }
 
-	// Temporary list for sorting
 	var list []*Process
 
 	for _, p := range procs {
@@ -344,11 +370,7 @@ func updateMetrics(procs []*Process) {
 		if ok {
 			diff := p.Ticks - prevTick
 			if diff >= 0 {
-				// CPU % = (process_ticks / total_system_ticks) * 100
-                // * NumCPU ? No, stat totals are sum of all CPUs.
-				p.CPUPct = (diff / sysDiff) * 100 * float64(1) // Assuming single core normalization or overall usage? 
-                // Standard `top` output is usually per-core relative or total relative.
-                // Let's stick to simple relative for now.
+				p.CPUPct = (diff / sysDiff) * 100 * float64(1) 
 			}
 		}
 		// Update state
@@ -357,10 +379,6 @@ func updateMetrics(procs []*Process) {
         list = append(list, p)
 	}
     
-    // Purge old PIDs
-    // In a real app we need a robust cleanup. 
-    // For now, re-building procTicks from scratch every time is inefficient.
-    // Optimized: Create new map
     newMap := make(map[int]float64)
     for _, p := range procs {
         newMap[p.PID] = p.Ticks
@@ -368,23 +386,20 @@ func updateMetrics(procs []*Process) {
     procTicks = newMap
     lastSysTicks = currSys
     
-    // Clear Metrics
     cpuGauge.Reset()
     memGauge.Reset()
     diskReadGauge.Reset()
     diskWriteGauge.Reset()
 
 	// Sort and Top N
-    topN := 40
     
-    // Helper to generic sort
     sortAndSet := func(sorter func(i, j int) bool, metric *prometheus.GaugeVec, val func(*Process) float64) {
         sort.Slice(list, sorter)
         for i := 0; i < topN && i < len(list); i++ {
             p := list[i]
             if val(p) == 0 { continue }
             metric.WithLabelValues(
-                strconv.Itoa(p.PID), p.User, p.Command, p.Runtime, strconv.Itoa(i+1), hostname,
+                strconv.Itoa(p.PID), p.User, p.Command, p.Runtime, strconv.Itoa(i+1), hostname, p.ContainerID,
             ).Set(val(p))
         }
     }

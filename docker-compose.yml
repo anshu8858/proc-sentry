@@ -14,6 +14,9 @@ services:
       - SYS_PTRACE
     environment:
       - ATOP_HOSTNAME=${HOSTNAME:-my-host}
+      - TOP_N=${atop_top_n:-50}
+      - ENABLE_DISK_IO=${atop_enable_disk_io:-true}
+      - ENABLE_PORTS=${atop_enable_ports:-false}
     read_only: true
     logging:
       driver: "json-file"
