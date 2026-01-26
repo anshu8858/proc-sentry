@@ -1,4 +1,4 @@
-module github.com/deziss/atop-exporter
+module github.com/deziss/proc-sentry
 
 go 1.24.2
 

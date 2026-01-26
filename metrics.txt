@@ -1,0 +1,337 @@
+# HELP atop_process_top_cpu_percent Top processes by CPU percentage
+# TYPE atop_process_top_cpu_percent gauge
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="103751",rank="17",runtime="host",user="1001"} 0.0507700118463361
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="3117202",rank="19",runtime="host",user="1001"} 0.033846674564224064
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="3118244",rank="48",runtime="host",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="3134283",rank="29",runtime="host",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="3273898",rank="13",runtime="host",user="1001"} 0.06769334912844813
+atop_process_top_cpu_percent{command="Isolated Web Co",container_id="",hostname="my-host",pid="3384035",rank="11",runtime="host",user="1001"} 0.06769334912844813
+atop_process_top_cpu_percent{command="WebExtensions",container_id="",hostname="my-host",pid="3117745",rank="23",runtime="host",user="1001"} 0.033846674564224064
+atop_process_top_cpu_percent{command="Xwayland",container_id="",hostname="my-host",pid="2770",rank="18",runtime="host",user="1001"} 0.0507700118463361
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168219",rank="26",runtime="host",user="1001"} 0.033846674564224064
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168290",rank="4",runtime="host",user="1001"} 0.33846674564224066
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168390",rank="1",runtime="host",user="1001"} 0.7784735149771534
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168679",rank="27",runtime="host",user="1001"} 0.033846674564224064
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168691",rank="9",runtime="host",user="1001"} 0.1015400236926722
+atop_process_top_cpu_percent{command="antigravity",container_id="",hostname="my-host",pid="4168789",rank="33",runtime="host",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="atop-exporter",container_id="",hostname="my-host",pid="175142",rank="10",runtime="host",user="0"} 0.08461668641056017
+atop_process_top_cpu_percent{command="atopacctd",container_id="",hostname="my-host",pid="1330",rank="50",runtime="host",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="beam.smp",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190197",rank="2",runtime="docker",user="0"} 0.6261634794381452
+atop_process_top_cpu_percent{command="beam.smp",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4193537",rank="6",runtime="docker",user="0"} 0.18615671010323234
+atop_process_top_cpu_percent{command="beam.smp",container_id="7ae41d83dce6a05a531f50b17d734a15da05bb171b34f7c0883a302c16b4b632",hostname="my-host",pid="4191183",rank="16",runtime="docker",user="0"} 0.06769334912844813
+atop_process_top_cpu_percent{command="containerd",container_id="",hostname="my-host",pid="1805",rank="8",runtime="containerd",user="0"} 0.11846336097478423
+atop_process_top_cpu_percent{command="containerd-shim",container_id="",hostname="my-host",pid="4189148",rank="31",runtime="containerd",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="containerd-shim",container_id="",hostname="my-host",pid="4189974",rank="30",runtime="containerd",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="containerd-shim",container_id="",hostname="my-host",pid="4190866",rank="39",runtime="containerd",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="dbus-daemon",container_id="",hostname="my-host",pid="1187",rank="35",runtime="host",user="101"} 0.016923337282112032
+atop_process_top_cpu_percent{command="dockerd",container_id="",hostname="my-host",pid="3512",rank="7",runtime="docker",user="0"} 0.1523100355390083
+atop_process_top_cpu_percent{command="firefox",container_id="",hostname="my-host",pid="3116110",rank="14",runtime="host",user="1001"} 0.06769334912844813
+atop_process_top_cpu_percent{command="gnome-shell",container_id="",hostname="my-host",pid="2364",rank="5",runtime="host",user="1001"} 0.22000338466745645
+atop_process_top_cpu_percent{command="imgproxy",container_id="746d8f954c2d6e0bb5ffea3a552877f38af712ff0ed66dfedc6fc4a069fa86d7",hostname="my-host",pid="4189232",rank="20",runtime="docker",user="999"} 0.033846674564224064
+atop_process_top_cpu_percent{command="irq/9-acpi",container_id="",hostname="my-host",pid="105",rank="43",runtime="host",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="jbd2/nvme0n1p2-8",container_id="",hostname="my-host",pid="388",rank="40",runtime="host",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="kworker/9:0-events",container_id="",hostname="my-host",pid="171487",rank="21",runtime="host",user="0"} 0.033846674564224064
+atop_process_top_cpu_percent{command="language_server",container_id="",hostname="my-host",pid="4169110",rank="3",runtime="host",user="1001"} 0.4061600947706888
+atop_process_top_cpu_percent{command="libvirtd",container_id="",hostname="my-host",pid="3567773",rank="25",runtime="host",user="0"} 0.033846674564224064
+atop_process_top_cpu_percent{command="minio",container_id="a6d59e683048add745cfd60fed50ddd973a511b870b2169753e3fad8b0d173bc",hostname="my-host",pid="4189234",rank="47",runtime="docker",user="0"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193423",rank="42",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193424",rank="49",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193425",rank="36",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193426",rank="32",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193427",rank="34",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193429",rank="37",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193430",rank="38",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193431",rank="44",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193432",rank="45",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193433",rank="46",runtime="docker",user="1001"} 0.016923337282112032
+atop_process_top_cpu_percent{command="node",container_id="366c6c19000c121fa24357f9f554b7bb1307c1959b06226eaae0fd1fd131746f",hostname="my-host",pid="4190997",rank="15",runtime="docker",user="0"} 0.06769334912844813
+atop_process_top_cpu_percent{command="node",container_id="8b67dec412f8ad864c1018727c9d594039ccad0b5a3764f153e85856479bca8f",hostname="my-host",pid="4192003",rank="12",runtime="docker",user="0"} 0.06769334912844813
+atop_process_top_cpu_percent{command="postgrest",container_id="2d9793fda057630a38995731d9db97ade50f7b837d18be985ff8d12ad1494043",hostname="my-host",pid="4190994",rank="41",runtime="docker",user="1000"} 0.016923337282112032
+atop_process_top_cpu_percent{command="snapd",container_id="",hostname="my-host",pid="1229",rank="24",runtime="host",user="0"} 0.033846674564224064
+atop_process_top_cpu_percent{command="update-notifier",container_id="",hostname="my-host",pid="19509",rank="22",runtime="host",user="1001"} 0.033846674564224064
+atop_process_top_cpu_percent{command="virt-manager",container_id="",hostname="my-host",pid="3567759",rank="28",runtime="host",user="1001"} 0.016923337282112032
+# HELP atop_process_top_disk_read_bytes Top processes by Disk Read bytes
+# TYPE atop_process_top_disk_read_bytes gauge
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189694",rank="7",runtime="docker",user="105"} 5.3510144e+07
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189755",rank="32",runtime="docker",user="105"} 151552
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189761",rank="19",runtime="docker",user="105"} 1.867776e+06
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189762",rank="41",runtime="docker",user="105"} 32768
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190500",rank="33",runtime="docker",user="105"} 139264
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190501",rank="42",runtime="docker",user="105"} 32768
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190503",rank="28",runtime="docker",user="105"} 212992
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190504",rank="38",runtime="docker",user="105"} 57344
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190505",rank="23",runtime="docker",user="105"} 294912
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190507",rank="35",runtime="docker",user="105"} 131072
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190508",rank="27",runtime="docker",user="105"} 217088
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190509",rank="29",runtime="docker",user="105"} 204800
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190510",rank="22",runtime="docker",user="105"} 393216
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190514",rank="25",runtime="docker",user="105"} 241664
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190515",rank="30",runtime="docker",user="105"} 192512
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190516",rank="21",runtime="docker",user="105"} 741376
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4191294",rank="48",runtime="docker",user="105"} 4096
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4191810",rank="26",runtime="docker",user="105"} 217088
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4193901",rank="46",runtime="docker",user="105"} 4096
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4193974",rank="49",runtime="docker",user="105"} 4096
+atop_process_top_disk_read_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4193978",rank="47",runtime="docker",user="105"} 4096
+atop_process_top_disk_read_bytes{command="auth",container_id="564c4aac1fd67b9b79725cab51998258f1b8ebd6dd2975a2db22cd2b749eef4e",hostname="my-host",pid="4191024",rank="12",runtime="docker",user="1000"} 1.4958592e+07
+atop_process_top_disk_read_bytes{command="beam.smp",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190197",rank="6",runtime="docker",user="0"} 5.4054912e+07
+atop_process_top_disk_read_bytes{command="beam.smp",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4193537",rank="11",runtime="docker",user="0"} 1.7297408e+07
+atop_process_top_disk_read_bytes{command="beam.smp",container_id="7ae41d83dce6a05a531f50b17d734a15da05bb171b34f7c0883a302c16b4b632",hostname="my-host",pid="4191183",rank="8",runtime="docker",user="0"} 3.8354944e+07
+atop_process_top_disk_read_bytes{command="edge-runtime",container_id="b35ef8ee81203bfb027d98be2f67b8ffca646f600fc50c09b7025b21d890b951",hostname="my-host",pid="4191026",rank="5",runtime="docker",user="0"} 6.4110592e+07
+atop_process_top_disk_read_bytes{command="imgproxy",container_id="746d8f954c2d6e0bb5ffea3a552877f38af712ff0ed66dfedc6fc4a069fa86d7",hostname="my-host",pid="4189232",rank="17",runtime="docker",user="999"} 6.094848e+06
+atop_process_top_disk_read_bytes{command="memsup",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190490",rank="45",runtime="docker",user="0"} 8192
+atop_process_top_disk_read_bytes{command="minio",container_id="a6d59e683048add745cfd60fed50ddd973a511b870b2169753e3fad8b0d173bc",hostname="my-host",pid="4189234",rank="4",runtime="docker",user="0"} 9.4261248e+07
+atop_process_top_disk_read_bytes{command="next-server (v1",container_id="c63d22ff1c99da6acf66ce4910f59a18ddd3bb517e9140d806a4f682776544d3",hostname="my-host",pid="4191037",rank="3",runtime="docker",user="0"} 1.0211328e+08
+atop_process_top_disk_read_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4191017",rank="16",runtime="docker",user="1001"} 7.053312e+06
+atop_process_top_disk_read_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193422",rank="24",runtime="docker",user="1001"} 258048
+atop_process_top_disk_read_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193424",rank="44",runtime="docker",user="1001"} 20480
+atop_process_top_disk_read_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193425",rank="39",runtime="docker",user="1001"} 53248
+atop_process_top_disk_read_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193426",rank="31",runtime="docker",user="1001"} 172032
+atop_process_top_disk_read_bytes{command="node",container_id="366c6c19000c121fa24357f9f554b7bb1307c1959b06226eaae0fd1fd131746f",hostname="my-host",pid="4190997",rank="10",runtime="docker",user="0"} 2.5071616e+07
+atop_process_top_disk_read_bytes{command="node",container_id="3eee0b48e833ac329d9002d1fcca69c805d505ded41951752fa1cf82254c73ca",hostname="my-host",pid="4947",rank="1",runtime="docker",user="1000"} 9.52201216e+08
+atop_process_top_disk_read_bytes{command="node",container_id="8b67dec412f8ad864c1018727c9d594039ccad0b5a3764f153e85856479bca8f",hostname="my-host",pid="4192003",rank="2",runtime="docker",user="0"} 1.0602496e+08
+atop_process_top_disk_read_bytes{command="postgrest",container_id="2d9793fda057630a38995731d9db97ade50f7b837d18be985ff8d12ad1494043",hostname="my-host",pid="4190994",rank="18",runtime="docker",user="1000"} 3.088384e+06
+atop_process_top_disk_read_bytes{command="redis-server",container_id="a2d077f7adcf9e940097122b7bd50f2e35a7910299803500361945864096abeb",hostname="my-host",pid="4530",rank="15",runtime="docker",user="999"} 1.267712e+07
+atop_process_top_disk_read_bytes{command="sh",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4189997",rank="13",runtime="docker",user="0"} 1.4278656e+07
+atop_process_top_disk_read_bytes{command="sh",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190489",rank="37",runtime="docker",user="0"} 114688
+atop_process_top_disk_read_bytes{command="sh",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4191382",rank="14",runtime="docker",user="0"} 1.3991936e+07
+atop_process_top_disk_read_bytes{command="sh",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4193881",rank="36",runtime="docker",user="0"} 126976
+atop_process_top_disk_read_bytes{command="sh",container_id="7ae41d83dce6a05a531f50b17d734a15da05bb171b34f7c0883a302c16b4b632",hostname="my-host",pid="4193970",rank="34",runtime="docker",user="0"} 135168
+atop_process_top_disk_read_bytes{command="tini",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4191010",rank="43",runtime="docker",user="0"} 24576
+atop_process_top_disk_read_bytes{command="tini",container_id="3eee0b48e833ac329d9002d1fcca69c805d505ded41951752fa1cf82254c73ca",hostname="my-host",pid="4552",rank="20",runtime="docker",user="1000"} 1.011712e+06
+atop_process_top_disk_read_bytes{command="tini",container_id="7ae41d83dce6a05a531f50b17d734a15da05bb171b34f7c0883a302c16b4b632",hostname="my-host",pid="4190986",rank="40",runtime="docker",user="0"} 40960
+atop_process_top_disk_read_bytes{command="vector",container_id="6e4d529f4a6ffecc36a37bc606d24c2467d2a1d3d6846b37e0f2ead3b2483e21",hostname="my-host",pid="4189223",rank="9",runtime="docker",user="0"} 2.5772032e+07
+# HELP atop_process_top_disk_write_bytes Top processes by Disk Write bytes
+# TYPE atop_process_top_disk_write_bytes gauge
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189694",rank="9",runtime="docker",user="105"} 1.78176e+06
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189755",rank="8",runtime="docker",user="105"} 3.923968e+06
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189758",rank="6",runtime="docker",user="105"} 1.1640832e+07
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189761",rank="16",runtime="docker",user="105"} 192512
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4189762",rank="17",runtime="docker",user="105"} 192512
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190500",rank="27",runtime="docker",user="105"} 65536
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190501",rank="19",runtime="docker",user="105"} 163840
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190503",rank="22",runtime="docker",user="105"} 114688
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190504",rank="25",runtime="docker",user="105"} 98304
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190505",rank="24",runtime="docker",user="105"} 98304
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190507",rank="20",runtime="docker",user="105"} 114688
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190508",rank="26",runtime="docker",user="105"} 90112
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190509",rank="28",runtime="docker",user="105"} 65536
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190510",rank="21",runtime="docker",user="105"} 114688
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190512",rank="23",runtime="docker",user="105"} 106496
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190514",rank="13",runtime="docker",user="105"} 778240
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190515",rank="12",runtime="docker",user="105"} 876544
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4190516",rank="11",runtime="docker",user="105"} 1.069056e+06
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4191810",rank="14",runtime="docker",user="105"} 684032
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4193901",rank="29",runtime="docker",user="105"} 16384
+atop_process_top_disk_write_bytes{command=".postgres-wrapp",container_id="d3963f4efc04c4ca9ee910f694dfa7f9baa15ff54a25afc0b18ae990223b8726",hostname="my-host",pid="4193980",rank="30",runtime="docker",user="105"} 16384
+atop_process_top_disk_write_bytes{command="beam.smp",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190197",rank="7",runtime="docker",user="0"} 5.287936e+06
+atop_process_top_disk_write_bytes{command="edge-runtime",container_id="b35ef8ee81203bfb027d98be2f67b8ffca646f600fc50c09b7025b21d890b951",hostname="my-host",pid="4191026",rank="10",runtime="docker",user="0"} 1.683456e+06
+atop_process_top_disk_write_bytes{command="minio",container_id="a6d59e683048add745cfd60fed50ddd973a511b870b2169753e3fad8b0d173bc",hostname="my-host",pid="4189234",rank="1",runtime="docker",user="0"} 5.79862528e+08
+atop_process_top_disk_write_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4191017",rank="15",runtime="docker",user="1001"} 647168
+atop_process_top_disk_write_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193422",rank="3",runtime="docker",user="1001"} 5.57105152e+08
+atop_process_top_disk_write_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193424",rank="5",runtime="docker",user="1001"} 1.921024e+07
+atop_process_top_disk_write_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193426",rank="18",runtime="docker",user="1001"} 167936
+atop_process_top_disk_write_bytes{command="node",container_id="3eee0b48e833ac329d9002d1fcca69c805d505ded41951752fa1cf82254c73ca",hostname="my-host",pid="4947",rank="4",runtime="docker",user="1000"} 4.6288896e+07
+atop_process_top_disk_write_bytes{command="node",container_id="8b67dec412f8ad864c1018727c9d594039ccad0b5a3764f153e85856479bca8f",hostname="my-host",pid="4192003",rank="2",runtime="docker",user="0"} 5.76319488e+08
+# HELP atop_process_top_memory_bytes Top processes by RSS Memory in bytes
+# TYPE atop_process_top_memory_bytes gauge
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="103751",rank="27",runtime="host",user="1001"} 1.38436608e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="3117202",rank="21",runtime="host",user="1001"} 1.7913856e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="3118244",rank="5",runtime="host",user="1001"} 4.9047552e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="3134283",rank="12",runtime="host",user="1001"} 2.43134464e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="3273898",rank="15",runtime="host",user="1001"} 2.27201024e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="3384035",rank="22",runtime="host",user="1001"} 1.73768704e+08
+atop_process_top_memory_bytes{command="Isolated Web Co",container_id="",hostname="my-host",pid="4166175",rank="6",runtime="host",user="1001"} 4.15809536e+08
+atop_process_top_memory_bytes{command="Privileged Cont",container_id="",hostname="my-host",pid="3117157",rank="23",runtime="host",user="1001"} 1.68972288e+08
+atop_process_top_memory_bytes{command="WebExtensions",container_id="",hostname="my-host",pid="3117745",rank="9",runtime="host",user="1001"} 2.7224064e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168219",rank="14",runtime="host",user="1001"} 2.41057792e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168290",rank="20",runtime="host",user="1001"} 1.814528e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168303",rank="39",runtime="host",user="1001"} 8.3980288e+07
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168390",rank="2",runtime="host",user="1001"} 6.47163904e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168459",rank="26",runtime="host",user="1001"} 1.52285184e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168679",rank="30",runtime="host",user="1001"} 1.2761088e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168691",rank="13",runtime="host",user="1001"} 2.41389568e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168788",rank="32",runtime="host",user="1001"} 1.2322816e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4168789",rank="19",runtime="host",user="1001"} 1.84434688e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4170225",rank="34",runtime="host",user="1001"} 1.1091968e+08
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4174520",rank="35",runtime="host",user="1001"} 9.5264768e+07
+atop_process_top_memory_bytes{command="antigravity",container_id="",hostname="my-host",pid="4179171",rank="37",runtime="host",user="1001"} 8.9063424e+07
+atop_process_top_memory_bytes{command="beam.smp",container_id="0fa6802eff233def98967a420c0070d679a9b360c056a45b6182170658734ec5",hostname="my-host",pid="4190197",rank="3",runtime="docker",user="0"} 6.3924224e+08
+atop_process_top_memory_bytes{command="beam.smp",container_id="3cd0483226609171b7ca199e6022bc2581934e4be8522885e2209bed70372639",hostname="my-host",pid="4193537",rank="11",runtime="docker",user="0"} 2.57359872e+08
+atop_process_top_memory_bytes{command="beam.smp",container_id="7ae41d83dce6a05a531f50b17d734a15da05bb171b34f7c0883a302c16b4b632",hostname="my-host",pid="4191183",rank="10",runtime="docker",user="0"} 2.671616e+08
+atop_process_top_memory_bytes{command="dockerd",container_id="",hostname="my-host",pid="3512",rank="29",runtime="docker",user="0"} 1.36101888e+08
+atop_process_top_memory_bytes{command="edge-runtime",container_id="b35ef8ee81203bfb027d98be2f67b8ffca646f600fc50c09b7025b21d890b951",hostname="my-host",pid="4191026",rank="36",runtime="docker",user="0"} 9.005056e+07
+atop_process_top_memory_bytes{command="firefox",container_id="",hostname="my-host",pid="3116110",rank="4",runtime="host",user="1001"} 5.94993152e+08
+atop_process_top_memory_bytes{command="gnome-shell",container_id="",hostname="my-host",pid="2364",rank="7",runtime="host",user="1001"} 2.94723584e+08
+atop_process_top_memory_bytes{command="gnome-software",container_id="",hostname="my-host",pid="2596",rank="33",runtime="host",user="1001"} 1.12001024e+08
+atop_process_top_memory_bytes{command="language_server",container_id="",hostname="my-host",pid="4169110",rank="1",runtime="host",user="1001"} 7.96024832e+08
+atop_process_top_memory_bytes{command="mattermost-desk",container_id="",hostname="my-host",pid="13177",rank="18",runtime="host",user="1001"} 1.90328832e+08
+atop_process_top_memory_bytes{command="minio",container_id="a6d59e683048add745cfd60fed50ddd973a511b870b2169753e3fad8b0d173bc",hostname="my-host",pid="4189234",rank="24",runtime="docker",user="0"} 1.56495872e+08
+atop_process_top_memory_bytes{command="next-server (v1",container_id="c63d22ff1c99da6acf66ce4910f59a18ddd3bb517e9140d806a4f682776544d3",hostname="my-host",pid="4191037",rank="16",runtime="docker",user="0"} 2.239488e+08
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193422",rank="38",runtime="docker",user="1001"} 8.728576e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193423",rank="41",runtime="docker",user="1001"} 8.2202624e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193424",rank="40",runtime="docker",user="1001"} 8.3587072e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193425",rank="49",runtime="docker",user="1001"} 7.6836864e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193426",rank="42",runtime="docker",user="1001"} 7.8053376e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193427",rank="48",runtime="docker",user="1001"} 7.6976128e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193428",rank="46",runtime="docker",user="1001"} 7.7287424e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193429",rank="50",runtime="docker",user="1001"} 7.6795904e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193430",rank="47",runtime="docker",user="1001"} 7.7205504e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193431",rank="45",runtime="docker",user="1001"} 7.7529088e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193432",rank="44",runtime="docker",user="1001"} 7.7541376e+07
+atop_process_top_memory_bytes{command="nginx",container_id="404161ba31e84a56464bc563f15fd2c520085b3ac4c52739fd5251ff5d18695f",hostname="my-host",pid="4193433",rank="43",runtime="docker",user="1001"} 7.7889536e+07
+atop_process_top_memory_bytes{command="node",container_id="366c6c19000c121fa24357f9f554b7bb1307c1959b06226eaae0fd1fd131746f",hostname="my-host",pid="4190997",rank="31",runtime="docker",user="0"} 1.23293696e+08
+atop_process_top_memory_bytes{command="node",container_id="3eee0b48e833ac329d9002d1fcca69c805d505ded41951752fa1cf82254c73ca",hostname="my-host",pid="4947",rank="25",runtime="docker",user="1000"} 1.55271168e+08
+atop_process_top_memory_bytes{command="node",container_id="8b67dec412f8ad864c1018727c9d594039ccad0b5a3764f153e85856479bca8f",hostname="my-host",pid="4192003",rank="17",runtime="docker",user="0"} 2.06360576e+08
+atop_process_top_memory_bytes{command="virt-manager",container_id="",hostname="my-host",pid="3567759",rank="28",runtime="host",user="1001"} 1.37474048e+08
+atop_process_top_memory_bytes{command="xdg-desktop-por",container_id="",hostname="my-host",pid="3057",rank="8",runtime="host",user="1001"} 2.80502272e+08
+# HELP atop_processes_scraped_total Total processes scraped
+# TYPE atop_processes_scraped_total gauge
+atop_processes_scraped_total{runtime="host"} 604
+# HELP atop_scrape_duration_seconds Scrape duration
+# TYPE atop_scrape_duration_seconds histogram
+atop_scrape_duration_seconds_bucket{le="0.005"} 0
+atop_scrape_duration_seconds_bucket{le="0.01"} 0
+atop_scrape_duration_seconds_bucket{le="0.025"} 0
+atop_scrape_duration_seconds_bucket{le="0.05"} 45
+atop_scrape_duration_seconds_bucket{le="0.1"} 67
+atop_scrape_duration_seconds_bucket{le="0.25"} 67
+atop_scrape_duration_seconds_bucket{le="0.5"} 67
+atop_scrape_duration_seconds_bucket{le="1"} 67
+atop_scrape_duration_seconds_bucket{le="2.5"} 67
+atop_scrape_duration_seconds_bucket{le="5"} 67
+atop_scrape_duration_seconds_bucket{le="10"} 67
+atop_scrape_duration_seconds_bucket{le="+Inf"} 67
+atop_scrape_duration_seconds_sum 3.135638638999999
+atop_scrape_duration_seconds_count 67
+# HELP atop_scrape_errors_total Total scrape errors
+# TYPE atop_scrape_errors_total counter
+atop_scrape_errors_total 0
+# HELP go_gc_duration_seconds A summary of the wall-time pause (stop-the-world) duration in garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 1.0946e-05
+go_gc_duration_seconds{quantile="0.25"} 2.385e-05
+go_gc_duration_seconds{quantile="0.5"} 3.1229e-05
+go_gc_duration_seconds{quantile="0.75"} 4.306e-05
+go_gc_duration_seconds{quantile="1"} 0.000158704
+go_gc_duration_seconds_sum 0.010647071
+go_gc_duration_seconds_count 268
+# HELP go_gc_gogc_percent Heap size target percentage configured by the user, otherwise 100. This value is set by the GOGC environment variable, and the runtime/debug.SetGCPercent function. Sourced from /gc/gogc:percent.
+# TYPE go_gc_gogc_percent gauge
+go_gc_gogc_percent 100
+# HELP go_gc_gomemlimit_bytes Go runtime memory limit configured by the user, otherwise math.MaxInt64. This value is set by the GOMEMLIMIT environment variable, and the runtime/debug.SetMemoryLimit function. Sourced from /gc/gomemlimit:bytes.
+# TYPE go_gc_gomemlimit_bytes gauge
+go_gc_gomemlimit_bytes 9.223372036854776e+18
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 7
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.24.12"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated in heap and currently in use. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 2.769608e+06
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated in heap until now, even if released already. Equals to /gc/heap/allocs:bytes.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 5.64525104e+08
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table. Equals to /memory/classes/profiling/buckets:bytes.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 3673
+# HELP go_memstats_frees_total Total number of heap objects frees. Equals to /gc/heap/frees:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 2.737627e+06
+# HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata. Equals to /memory/classes/metadata/other:bytes.
+# TYPE go_memstats_gc_sys_bytes gauge
+go_memstats_gc_sys_bytes 2.814e+06
+# HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and currently in use, same as go_memstats_alloc_bytes. Equals to /memory/classes/heap/objects:bytes.
+# TYPE go_memstats_heap_alloc_bytes gauge
+go_memstats_heap_alloc_bytes 2.769608e+06
+# HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used. Equals to /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_idle_bytes gauge
+go_memstats_heap_idle_bytes 7.553024e+06
+# HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes
+# TYPE go_memstats_heap_inuse_bytes gauge
+go_memstats_heap_inuse_bytes 4.112384e+06
+# HELP go_memstats_heap_objects Number of currently allocated objects. Equals to /gc/heap/objects:objects.
+# TYPE go_memstats_heap_objects gauge
+go_memstats_heap_objects 16048
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS. Equals to /memory/classes/heap/released:bytes.
+# TYPE go_memstats_heap_released_bytes gauge
+go_memstats_heap_released_bytes 6.373376e+06
+# HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system. Equals to /memory/classes/heap/objects:bytes + /memory/classes/heap/unused:bytes + /memory/classes/heap/released:bytes + /memory/classes/heap/free:bytes.
+# TYPE go_memstats_heap_sys_bytes gauge
+go_memstats_heap_sys_bytes 1.1665408e+07
+# HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
+# TYPE go_memstats_last_gc_time_seconds gauge
+go_memstats_last_gc_time_seconds 1.7694551114531848e+09
+# HELP go_memstats_mallocs_total Total number of heap objects allocated, both live and gc-ed. Semantically a counter version for go_memstats_heap_objects gauge. Equals to /gc/heap/allocs:objects + /gc/heap/tiny/allocs:objects.
+# TYPE go_memstats_mallocs_total counter
+go_memstats_mallocs_total 2.753675e+06
+# HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures. Equals to /memory/classes/metadata/mcache/inuse:bytes.
+# TYPE go_memstats_mcache_inuse_bytes gauge
+go_memstats_mcache_inuse_bytes 14496
+# HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system. Equals to /memory/classes/metadata/mcache/inuse:bytes + /memory/classes/metadata/mcache/free:bytes.
+# TYPE go_memstats_mcache_sys_bytes gauge
+go_memstats_mcache_sys_bytes 15704
+# HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures. Equals to /memory/classes/metadata/mspan/inuse:bytes.
+# TYPE go_memstats_mspan_inuse_bytes gauge
+go_memstats_mspan_inuse_bytes 266080
+# HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system. Equals to /memory/classes/metadata/mspan/inuse:bytes + /memory/classes/metadata/mspan/free:bytes.
+# TYPE go_memstats_mspan_sys_bytes gauge
+go_memstats_mspan_sys_bytes 326400
+# HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place. Equals to /gc/heap/goal:bytes.
+# TYPE go_memstats_next_gc_bytes gauge
+go_memstats_next_gc_bytes 4.194304e+06
+# HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations. Equals to /memory/classes/other:bytes.
+# TYPE go_memstats_other_sys_bytes gauge
+go_memstats_other_sys_bytes 2.303279e+06
+# HELP go_memstats_stack_inuse_bytes Number of bytes obtained from system for stack allocator in non-CGO environments. Equals to /memory/classes/heap/stacks:bytes.
+# TYPE go_memstats_stack_inuse_bytes gauge
+go_memstats_stack_inuse_bytes 917504
+# HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator. Equals to /memory/classes/heap/stacks:bytes + /memory/classes/os-stacks:bytes.
+# TYPE go_memstats_stack_sys_bytes gauge
+go_memstats_stack_sys_bytes 917504
+# HELP go_memstats_sys_bytes Number of bytes obtained from system. Equals to /memory/classes/total:byte.
+# TYPE go_memstats_sys_bytes gauge
+go_memstats_sys_bytes 1.8045968e+07
+# HELP go_sched_gomaxprocs_threads The current runtime.GOMAXPROCS setting, or the number of operating system threads that can execute user-level Go code simultaneously. Sourced from /sched/gomaxprocs:threads.
+# TYPE go_sched_gomaxprocs_threads gauge
+go_sched_gomaxprocs_threads 12
+# HELP go_threads Number of OS threads created.
+# TYPE go_threads gauge
+go_threads 15
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 3.71
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 65536
+# HELP process_network_receive_bytes_total Number of bytes received by the process over the network.
+# TYPE process_network_receive_bytes_total counter
+process_network_receive_bytes_total 2369
+# HELP process_network_transmit_bytes_total Number of bytes sent by the process over the network.
+# TYPE process_network_transmit_bytes_total counter
+process_network_transmit_bytes_total 92290
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 7
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 1.462272e+07
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.76945477576e+09
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 1.26519296e+09
+# HELP process_virtual_memory_max_bytes Maximum amount of virtual memory available in bytes.
+# TYPE process_virtual_memory_max_bytes gauge
+process_virtual_memory_max_bytes 1.8446744073709552e+19
+# HELP promhttp_metric_handler_requests_in_flight Current number of scrapes being served.
+# TYPE promhttp_metric_handler_requests_in_flight gauge
+promhttp_metric_handler_requests_in_flight 1
+# HELP promhttp_metric_handler_requests_total Total number of scrapes by HTTP status code.
+# TYPE promhttp_metric_handler_requests_total counter
+promhttp_metric_handler_requests_total{code="200"} 2
+promhttp_metric_handler_requests_total{code="500"} 0
+promhttp_metric_handler_requests_total{code="503"} 0

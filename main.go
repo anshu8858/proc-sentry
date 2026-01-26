@@ -25,42 +25,42 @@ var (
 	topN           = 40
 	uiUpdatePeriod = 5 * time.Second
 	enableDiskIO   = true
-	enablePorts    = true // Implementation specific: scanning ports is expensive
+	enablePorts    = true
 )
 
 var (
 	// Metrics
 	scrapeDuration = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Name: "atop_scrape_duration_seconds",
+		Name: "proc_scrape_duration_seconds",
 		Help: "Scrape duration",
 	})
 	scrapeErrors = prometheus.NewCounter(prometheus.CounterOpts{
-		Name: "atop_scrape_errors_total",
+		Name: "proc_scrape_errors_total",
 		Help: "Total scrape errors",
 	})
 	processesTotal = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "atop_processes_scraped_total",
+		Name: "proc_processes_scraped_total",
 		Help: "Total processes scraped",
 	}, []string{"runtime"})
 
 	// Dynamic Gauges
 	cpuGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "atop_process_top_cpu_percent",
+		Name: "proc_process_top_cpu_percent",
 		Help: "Top processes by CPU percentage",
 	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	memGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "atop_process_top_memory_bytes",
+		Name: "proc_process_top_memory_bytes",
 		Help: "Top processes by RSS Memory in bytes",
 	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	diskReadGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "atop_process_top_disk_read_bytes",
+		Name: "proc_process_top_disk_read_bytes",
 		Help: "Top processes by Disk Read bytes",
 	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
 	diskWriteGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
-		Name: "atop_process_top_disk_write_bytes",
+		Name: "proc_process_top_disk_write_bytes",
 		Help: "Top processes by Disk Write bytes",
 	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
 
@@ -69,6 +69,9 @@ var (
 	mu           sync.RWMutex
 	prevCPUTicks = make(map[int]float64) // pid -> total_ticks
 	sysCLKTCK    = float64(100)          // default
+	
+	// User Cache
+	userMap = make(map[string]string) // uid -> username
 	
 	// Regex for Container ID
 	reContainerID = regexp.MustCompile(`([0-9a-fA-F]{64}|[0-9a-fA-F]{12})`)
@@ -103,6 +106,32 @@ func init() {
 			hostname = h
 		}
 	}
+	
+	// Load User Map once
+	loadUserMap()
+}
+
+func loadUserMap() {
+    // Read /etc/passwd
+    data, err := ioutil.ReadFile("/etc/passwd")
+    if err != nil {
+        log.Printf("Warning: Failed to read /etc/passwd: %v", err)
+        return
+    }
+    
+    lines := strings.Split(string(data), "\n")
+    count := 0
+    for _, line := range lines {
+        // root:x:0:0:root:/root:/bin/bash
+        parts := strings.Split(line, ":")
+        if len(parts) >= 3 {
+            name := parts[0]
+            uid := parts[2]
+            userMap[uid] = name
+            count++
+        }
+    }
+    log.Printf("Loaded %d users from /etc/passwd", count)
 }
 
 func main() {
@@ -121,16 +150,12 @@ func main() {
 		enableDiskIO = false
 	}
 	
-	// Network disabled by default or specific toggle? User asked to "enable disable".
-	// We default to false for performance unless explicitly enabled? 
-	// Or default true to match request? 
-	// For now let's default true but respect false.
 	if v := os.Getenv("ENABLE_PORTS"); v == "false" {
 		enablePorts = false
 	}
 
 	log.SetFlags(0)
-	log.Printf("Starting atop-exporter on :%s (TOP_N=%d, DiskIO=%v)", port, topN, enableDiskIO)
+	log.Printf("Starting proc-sentry on :%s (TOP_N=%d, DiskIO=%v)", port, topN, enableDiskIO)
 
 	// Background collector
 	go collectorLoop()
@@ -232,8 +257,6 @@ func getSystemTotalTicks() (float64, error) {
 	return sum, nil
 }
 
-// Helper for bytes reader
-
 func readProcess(pid int) (*Process, error) {
 	// 1. Read /proc/pid/stat
 	stat, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
@@ -259,6 +282,7 @@ func readProcess(pid int) (*Process, error) {
 	// 2. Read /proc/pid/status (for User)
 	status, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/status", pid))
 	uid := "0"
+	username := "root"
 	if err == nil {
 		for _, line := range strings.Split(string(status), "\n") {
 			if strings.HasPrefix(line, "Uid:") {
@@ -269,6 +293,13 @@ func readProcess(pid int) (*Process, error) {
 				break
 			}
 		}
+	}
+	
+	// Resolve Username
+	if name, ok := userMap[uid]; ok {
+	    username = name
+	} else {
+	    username = uid
 	}
 	
 	// 3. Disk I/O (Optional)
@@ -316,13 +347,9 @@ func readProcess(pid int) (*Process, error) {
     cgroupBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cgroup", pid))
     if err == nil {
         cg := string(cgroupBytes)
-        // Check for Docker/Kube/Containerd patterns in any line
         lines := strings.Split(cg, "\n")
         for _, l := range lines {
-        	// v1: 1:name=systemd:/kubepods/...
-        	// v2: 0::/user.slice/...
         	if strings.Contains(l, "docker") || strings.Contains(l, "containerd") || strings.Contains(l, "kubepods") {
-        		// Attempt to extract ID
         		matches := reContainerID.FindStringSubmatch(l)
         		if len(matches) > 1 {
         			containerID = matches[1]
@@ -345,7 +372,7 @@ func readProcess(pid int) (*Process, error) {
 
 	return &Process{
 		PID:         pid,
-		User:        uid,
+		User:        username,
 		Command:     cmd,
 		Runtime:     runtime,
 		ContainerID: containerID,

@@ -6,15 +6,15 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -o atop-exporter .
+RUN CGO_ENABLED=0 GOOS=linux go build -o proc-sentry .
 
 # Stage 2: Runtime
 FROM scratch
 
-COPY --from=builder /app/atop-exporter /atop-exporter
+COPY --from=builder /app/proc-sentry /proc-sentry
 
 # Expose metric port
 EXPOSE 9105
 
 # Run
-ENTRYPOINT ["/atop-exporter"]
+ENTRYPOINT ["/proc-sentry"]
