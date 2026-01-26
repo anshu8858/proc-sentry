@@ -1,0 +1,20 @@
+services:
+  atop-exporter:
+    build: .
+    image: atop-exporter:latest
+    container_name: atop-exporter
+    restart: unless-stopped
+    ports:
+      - "9105:9105"
+    pid: host
+    volumes:
+      - /proc:/proc:ro
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+    cap_add:
+      - SYS_PTRACE
+    read_only: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
