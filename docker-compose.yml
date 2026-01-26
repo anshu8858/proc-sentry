@@ -12,6 +12,8 @@ services:
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
     cap_add:
       - SYS_PTRACE
+    environment:
+      - ATOP_HOSTNAME=${HOSTNAME:-my-host}
     read_only: true
     logging:
       driver: "json-file"

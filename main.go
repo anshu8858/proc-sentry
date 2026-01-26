@@ -84,11 +84,15 @@ func init() {
 	prometheus.MustRegister(scrapeDuration, scrapeErrors, processesTotal, cpuGauge, memGauge, diskReadGauge, diskWriteGauge)
 
 	// Get Hostname
-	h, err := os.Hostname()
-	if err != nil {
-		hostname = "unknown"
+	if env := os.Getenv("ATOP_HOSTNAME"); env != "" {
+		hostname = env
 	} else {
-		hostname = h
+		h, err := os.Hostname()
+		if err != nil {
+			hostname = "unknown"
+		} else {
+			hostname = h
+		}
 	}
 
 	// Get Clock Tick
