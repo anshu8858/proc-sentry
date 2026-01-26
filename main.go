@@ -96,7 +96,7 @@ func init() {
 	prometheus.MustRegister(scrapeDuration, scrapeErrors, processesTotal, cpuGauge, memGauge, diskReadGauge, diskWriteGauge)
 
 	// Get Hostname
-	if env := os.Getenv("ATOP_HOSTNAME"); env != "" {
+	if env := os.Getenv("PROC_HOSTNAME"); env != "" {
 		hostname = env
 	} else {
 		h, err := os.Hostname()
