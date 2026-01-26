@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 	"strconv"
@@ -43,26 +44,26 @@ var (
 		Help: "Total processes scraped",
 	}, []string{"runtime"})
 
-	// Dynamic Gauges
+	// Dynamic Gauges - Added 'ports' label
 	cpuGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "proc_process_top_cpu_percent",
 		Help: "Top processes by CPU percentage",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id", "ports"})
 
 	memGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "proc_process_top_memory_bytes",
 		Help: "Top processes by RSS Memory in bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id", "ports"})
 
 	diskReadGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "proc_process_top_disk_read_bytes",
 		Help: "Top processes by Disk Read bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id", "ports"})
 
 	diskWriteGauge = prometheus.NewGaugeVec(prometheus.GaugeOpts{
 		Name: "proc_process_top_disk_write_bytes",
 		Help: "Top processes by Disk Write bytes",
-	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id"})
+	}, []string{"pid", "user", "command", "runtime", "rank", "hostname", "container_id", "ports"})
 
 	// State
 	hostname     string
@@ -89,6 +90,7 @@ type Process struct {
 	DiskRead    float64
 	DiskWrite   float64
 	Ticks       float64
+	Ports       string // New field
 }
 
 func init() {
@@ -122,7 +124,6 @@ func loadUserMap() {
     lines := strings.Split(string(data), "\n")
     count := 0
     for _, line := range lines {
-        // root:x:0:0:root:/root:/bin/bash
         parts := strings.Split(line, ":")
         if len(parts) >= 3 {
             name := parts[0]
@@ -155,7 +156,7 @@ func main() {
 	}
 
 	log.SetFlags(0)
-	log.Printf("Starting proc-sentry on :%s (TOP_N=%d, DiskIO=%v)", port, topN, enableDiskIO)
+	log.Printf("Starting proc-sentry on :%s (TOP_N=%d, DiskIO=%v, Ports=%v)", port, topN, enableDiskIO, enablePorts)
 
 	// Background collector
 	go collectorLoop()
@@ -240,7 +241,6 @@ func getSystemTotalTicks() (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	// Reading line by line to avoid reading entire file
 	scanner := bufio.NewScanner(bytes.NewReader(data))
 	scanner.Scan()
 	line := scanner.Text()
@@ -258,7 +258,6 @@ func getSystemTotalTicks() (float64, error) {
 }
 
 func readProcess(pid int) (*Process, error) {
-	// 1. Read /proc/pid/stat
 	stat, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
 	if err != nil {
 		return nil, err
@@ -279,7 +278,7 @@ func readProcess(pid int) (*Process, error) {
 	stime, _ := strconv.ParseFloat(fields[12], 64)
 	ticks := utime + stime
 	
-	// 2. Read /proc/pid/status (for User)
+	// User
 	status, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/status", pid))
 	uid := "0"
 	username := "root"
@@ -294,15 +293,13 @@ func readProcess(pid int) (*Process, error) {
 			}
 		}
 	}
-	
-	// Resolve Username
 	if name, ok := userMap[uid]; ok {
 	    username = name
 	} else {
 	    username = uid
 	}
 	
-	// 3. Disk I/O (Optional)
+	// Disk I/O
 	var rd, wr float64
 	if enableDiskIO {
 		ioBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/io", pid))
@@ -323,7 +320,7 @@ func readProcess(pid int) (*Process, error) {
 		}
 	}
 
-	// 4. Memory (from statm)
+	// Memory
 	statm, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/statm", pid))
 	rssBytes := 0.0
 	if err == nil {
@@ -334,20 +331,19 @@ func readProcess(pid int) (*Process, error) {
 		}
 	}
 
-	// 5. Command 
+	// Command 
 	cmdBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/comm", pid))
 	cmd := "unknown"
 	if err == nil {
 		cmd = strings.TrimSpace(string(cmdBytes))
 	}
     
-    // 6. Runtime & Container ID detection
+    // Runtime
     runtime := "host"
     containerID := ""
     cgroupBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cgroup", pid))
     if err == nil {
-        cg := string(cgroupBytes)
-        lines := strings.Split(cg, "\n")
+        lines := strings.Split(string(cgroupBytes), "\n")
         for _, l := range lines {
         	if strings.Contains(l, "docker") || strings.Contains(l, "containerd") || strings.Contains(l, "kubepods") {
         		matches := reContainerID.FindStringSubmatch(l)
@@ -362,10 +358,7 @@ func readProcess(pid int) (*Process, error) {
         		} else if strings.Contains(l, "containerd") {
         			runtime = "containerd"
         		}
-        		
-        		if containerID != "" {
-        			break
-        		}
+        		if containerID != "" { break }
         	}
         }
     }
@@ -384,14 +377,12 @@ func readProcess(pid int) (*Process, error) {
 }
 
 func updateMetrics(procs []*Process) {
-	// Calculate CPU
+	// 1. Calculate CPU Deltas
 	currSys, _ := getSystemTotalTicks()
 	sysDiff := currSys - lastSysTicks
-	
 	if sysDiff <= 0 { sysDiff = 1 }
 
 	var list []*Process
-
 	for _, p := range procs {
 		prevTick, ok := procTicks[p.PID]
 		if ok {
@@ -400,41 +391,147 @@ func updateMetrics(procs []*Process) {
 				p.CPUPct = (diff / sysDiff) * 100 * float64(1) 
 			}
 		}
-		// Update state
 		procTicks[p.PID] = p.Ticks
-        
         list = append(list, p)
 	}
     
+    // Purge old state
     newMap := make(map[int]float64)
-    for _, p := range procs {
-        newMap[p.PID] = p.Ticks
-    }
+    for _, p := range procs { newMap[p.PID] = p.Ticks }
     procTicks = newMap
     lastSysTicks = currSys
     
+    // Reset Gauges
     cpuGauge.Reset()
     memGauge.Reset()
     diskReadGauge.Reset()
     diskWriteGauge.Reset()
 
-	// Sort and Top N
+    // 2. Identify Unique Top N Processes
+    // We want to resolve ports for any process that appears in ANY Top N list.
+    // To avoid resolving the same PID multiple times or resolving unnecessary PIDs,
+    // we first gather the winners.
     
-    sortAndSet := func(sorter func(i, j int) bool, metric *prometheus.GaugeVec, val func(*Process) float64) {
+    winners := make(map[int]*Process)
+    
+    addToWinners := func(sorter func(i, j int) bool, val func(*Process) float64) {
+        sort.Slice(list, sorter)
+        for i := 0; i < topN && i < len(list); i++ {
+            p := list[i]
+            if val(p) > 0 {
+                winners[p.PID] = p
+            }
+        }
+    }
+
+    addToWinners(func(i, j int) bool { return list[i].CPUPct > list[j].CPUPct }, func(p *Process) float64 { return p.CPUPct })
+    addToWinners(func(i, j int) bool { return list[i].MemRSS > list[j].MemRSS }, func(p *Process) float64 { return p.MemRSS })
+    addToWinners(func(i, j int) bool { return list[i].DiskRead > list[j].DiskRead }, func(p *Process) float64 { return p.DiskRead })
+    addToWinners(func(i, j int) bool { return list[i].DiskWrite > list[j].DiskWrite }, func(p *Process) float64 { return p.DiskWrite })
+
+    // 3. Resolve Ports ONLY for Winners
+    if enablePorts && len(winners) > 0 {
+        inodeMap := buildSocketMap()
+        for _, p := range winners {
+            p.Ports = getProcessPorts(p.PID, inodeMap)
+        }
+    }
+
+    // 4. Set Metrics (Re-sorting needed? Yes, or just reuse sorted lists?
+    // We need to set metrics in Rank order. Rank is specific to the metric type.
+    // So we must re-sort 'list' (which now contains pointers to enriched processes).
+    
+    setMetric := func(sorter func(i, j int) bool, metric *prometheus.GaugeVec, val func(*Process) float64) {
         sort.Slice(list, sorter)
         for i := 0; i < topN && i < len(list); i++ {
             p := list[i]
             if val(p) == 0 { continue }
             metric.WithLabelValues(
-                strconv.Itoa(p.PID), p.User, p.Command, p.Runtime, strconv.Itoa(i+1), hostname, p.ContainerID,
+                strconv.Itoa(p.PID), p.User, p.Command, p.Runtime, strconv.Itoa(i+1), hostname, p.ContainerID, p.Ports,
             ).Set(val(p))
         }
     }
 
-    sortAndSet(func(i, j int) bool { return list[i].CPUPct > list[j].CPUPct }, cpuGauge, func(p *Process) float64 { return p.CPUPct })
-    sortAndSet(func(i, j int) bool { return list[i].MemRSS > list[j].MemRSS }, memGauge, func(p *Process) float64 { return p.MemRSS })
-    sortAndSet(func(i, j int) bool { return list[i].DiskRead > list[j].DiskRead }, diskReadGauge, func(p *Process) float64 { return p.DiskRead })
-    sortAndSet(func(i, j int) bool { return list[i].DiskWrite > list[j].DiskWrite }, diskWriteGauge, func(p *Process) float64 { return p.DiskWrite })
+    setMetric(func(i, j int) bool { return list[i].CPUPct > list[j].CPUPct }, cpuGauge, func(p *Process) float64 { return p.CPUPct })
+    setMetric(func(i, j int) bool { return list[i].MemRSS > list[j].MemRSS }, memGauge, func(p *Process) float64 { return p.MemRSS })
+    setMetric(func(i, j int) bool { return list[i].DiskRead > list[j].DiskRead }, diskReadGauge, func(p *Process) float64 { return p.DiskRead })
+    setMetric(func(i, j int) bool { return list[i].DiskWrite > list[j].DiskWrite }, diskWriteGauge, func(p *Process) float64 { return p.DiskWrite })
     
     processesTotal.WithLabelValues("host").Set(float64(len(procs)))
+}
+
+// --- Port Resolution Logic ---
+
+func buildSocketMap() map[string]int {
+    // Reads /proc/net/{tcp,tcp6,udp,udp6}
+    // Returns Inode -> Port
+    m := make(map[string]int)
+    
+    files := []string{"/proc/net/tcp", "/proc/net/tcp6", "/proc/net/udp", "/proc/net/udp6"}
+    for _, f := range files {
+        data, err := ioutil.ReadFile(f)
+        if err != nil { continue }
+        
+        lines := strings.Split(string(data), "\n")
+        // Skip header
+        for _, line := range lines[1:] {
+            fields := strings.Fields(line)
+            if len(fields) < 10 { continue }
+            
+            // State 0A = Listen (TCP). UDP doesn't key on state usually but 07.
+            // Let's just grab listening ports? Or all? User said "ports". usually LISTEN.
+            // TCP: 01 (ESTAB), 0A (LISTEN).
+            state := fields[3]
+            if strings.Contains(f, "tcp") && state != "0A" { continue }
+            
+            // local_address:port (hex)
+            local := fields[1] // 00000000:0016
+            parts := strings.Split(local, ":")
+            if len(parts) < 2 { continue }
+            
+            portHex := parts[1]
+            inode := fields[9]
+            
+            port, err := strconv.ParseInt(portHex, 16, 64)
+            if err == nil {
+                m[inode] = int(port)
+            }
+        }
+    }
+    return m
+}
+
+func getProcessPorts(pid int, inodeMap map[string]int) string {
+    fdDir := fmt.Sprintf("/proc/%d/fd", pid)
+    files, err := ioutil.ReadDir(fdDir)
+    if err != nil { return "" }
+    
+    var ports []int
+    seen := make(map[int]bool)
+    
+    for _, fd := range files {
+        // Read link target
+        target, err := os.Readlink(filepath.Join(fdDir, fd.Name()))
+        if err != nil { continue }
+        
+        // socket:[12345]
+        if strings.HasPrefix(target, "socket:[") {
+            inode := strings.TrimSuffix(strings.TrimPrefix(target, "socket:["), "]")
+            if port, ok := inodeMap[inode]; ok {
+                if !seen[port] {
+                    ports = append(ports, port)
+                    seen[port] = true
+                }
+            }
+        }
+    }
+    sort.Ints(ports)
+    
+    // Join
+    var sb strings.Builder
+    for i, p := range ports {
+        if i > 0 { sb.WriteString(",") }
+        sb.WriteString(strconv.Itoa(p))
+    }
+    return sb.String()
 }
