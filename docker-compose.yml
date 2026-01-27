@@ -8,13 +8,14 @@ services:
       - "9105:9105"
     pid: host
     volumes:
-      - /proc:/proc:ro
+      - /proc:/host/proc:ro
       - /sys/fs/cgroup:/sys/fs/cgroup:ro
       - /etc/passwd:/etc/passwd:ro
     cap_add:
       - SYS_PTRACE
     environment:
       - PROC_HOSTNAME=${HOSTNAME:-my-host}
+      - PROCFS_PATH=/host/proc
       - TOP_N=${proc_top_n:-50}
       - ENABLE_DISK_IO=${proc_enable_disk_io:-true}
       - ENABLE_PORTS=${proc_enable_ports:-false}

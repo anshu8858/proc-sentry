@@ -27,6 +27,7 @@ var (
 	uiUpdatePeriod = 5 * time.Second
 	enableDiskIO   = true
 	enablePorts    = true
+	procFS         = "/proc" // Default path, overridable
 )
 
 var (
@@ -90,7 +91,7 @@ type Process struct {
 	DiskRead    float64
 	DiskWrite   float64
 	Ticks       float64
-	Ports       string // New field
+	Ports       string 
 }
 
 func init() {
@@ -107,6 +108,11 @@ func init() {
 		} else {
 			hostname = h
 		}
+	}
+	
+	// ProcFS Override?
+	if env := os.Getenv("PROCFS_PATH"); env != "" {
+		procFS = env
 	}
 	
 	// Load User Map once
@@ -156,7 +162,7 @@ func main() {
 	}
 
 	log.SetFlags(0)
-	log.Printf("Starting proc-sentry on :%s (TOP_N=%d, DiskIO=%v, Ports=%v)", port, topN, enableDiskIO, enablePorts)
+	log.Printf("Starting proc-sentry on :%s (TOP_N=%d, DiskIO=%v, Ports=%v, PROCFS=%s)", port, topN, enableDiskIO, enablePorts, procFS)
 
 	// Background collector
 	go collectorLoop()
@@ -199,7 +205,7 @@ func collect() {
 }
 
 func scanProc() ([]*Process, error) {
-	files, err := ioutil.ReadDir("/proc")
+	files, err := ioutil.ReadDir(procFS)
 	if err != nil {
 		return nil, err
 	}
@@ -237,7 +243,7 @@ var (
 )
 
 func getSystemTotalTicks() (float64, error) {
-	data, err := ioutil.ReadFile("/proc/stat")
+	data, err := ioutil.ReadFile(filepath.Join(procFS, "stat"))
 	if err != nil {
 		return 0, err
 	}
@@ -258,7 +264,9 @@ func getSystemTotalTicks() (float64, error) {
 }
 
 func readProcess(pid int) (*Process, error) {
-	stat, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
+    pidDir := filepath.Join(procFS, strconv.Itoa(pid))
+    
+	stat, err := ioutil.ReadFile(filepath.Join(pidDir, "stat"))
 	if err != nil {
 		return nil, err
 	}
@@ -279,7 +287,7 @@ func readProcess(pid int) (*Process, error) {
 	ticks := utime + stime
 	
 	// User
-	status, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/status", pid))
+	status, err := ioutil.ReadFile(filepath.Join(pidDir, "status"))
 	uid := "0"
 	username := "root"
 	if err == nil {
@@ -302,7 +310,7 @@ func readProcess(pid int) (*Process, error) {
 	// Disk I/O
 	var rd, wr float64
 	if enableDiskIO {
-		ioBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/io", pid))
+		ioBytes, err := ioutil.ReadFile(filepath.Join(pidDir, "io"))
 		if err == nil {
 			for _, line := range strings.Split(string(ioBytes), "\n") {
 				if strings.HasPrefix(line, "read_bytes:") {
@@ -321,7 +329,7 @@ func readProcess(pid int) (*Process, error) {
 	}
 
 	// Memory
-	statm, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/statm", pid))
+	statm, err := ioutil.ReadFile(filepath.Join(pidDir, "statm"))
 	rssBytes := 0.0
 	if err == nil {
 		f := strings.Fields(string(statm))
@@ -332,7 +340,7 @@ func readProcess(pid int) (*Process, error) {
 	}
 
 	// Command 
-	cmdBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/comm", pid))
+	cmdBytes, err := ioutil.ReadFile(filepath.Join(pidDir, "comm"))
 	cmd := "unknown"
 	if err == nil {
 		cmd = strings.TrimSpace(string(cmdBytes))
@@ -341,7 +349,7 @@ func readProcess(pid int) (*Process, error) {
     // Runtime
     runtime := "host"
     containerID := ""
-    cgroupBytes, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/cgroup", pid))
+    cgroupBytes, err := ioutil.ReadFile(filepath.Join(pidDir, "cgroup"))
     if err == nil {
         lines := strings.Split(string(cgroupBytes), "\n")
         for _, l := range lines {
@@ -408,10 +416,6 @@ func updateMetrics(procs []*Process) {
     diskWriteGauge.Reset()
 
     // 2. Identify Unique Top N Processes
-    // We want to resolve ports for any process that appears in ANY Top N list.
-    // To avoid resolving the same PID multiple times or resolving unnecessary PIDs,
-    // we first gather the winners.
-    
     winners := make(map[int]*Process)
     
     addToWinners := func(sorter func(i, j int) bool, val func(*Process) float64) {
@@ -437,10 +441,7 @@ func updateMetrics(procs []*Process) {
         }
     }
 
-    // 4. Set Metrics (Re-sorting needed? Yes, or just reuse sorted lists?
-    // We need to set metrics in Rank order. Rank is specific to the metric type.
-    // So we must re-sort 'list' (which now contains pointers to enriched processes).
-    
+    // 4. Set Metrics
     setMetric := func(sorter func(i, j int) bool, metric *prometheus.GaugeVec, val func(*Process) float64) {
         sort.Slice(list, sorter)
         for i := 0; i < topN && i < len(list); i++ {
@@ -463,29 +464,30 @@ func updateMetrics(procs []*Process) {
 // --- Port Resolution Logic ---
 
 func buildSocketMap() map[string]int {
-    // Reads /proc/net/{tcp,tcp6,udp,udp6}
-    // Returns Inode -> Port
     m := make(map[string]int)
     
-    files := []string{"/proc/net/tcp", "/proc/net/tcp6", "/proc/net/udp", "/proc/net/udp6"}
-    for _, f := range files {
-        data, err := ioutil.ReadFile(f)
+    files := []string{"tcp", "tcp6", "udp", "udp6"}
+    for _, fName := range files {
+        // Use default procFS for net files? Or is net separate?
+        // /proc/net is a symlink to /proc/self/net.
+        // If we are reading HOST stats, we want HOST net.
+        // Host net is at /host/proc/net
+        
+        // Correct path construction using procFS
+        path := filepath.Join(procFS, "net", fName)
+        
+        data, err := ioutil.ReadFile(path)
         if err != nil { continue }
         
         lines := strings.Split(string(data), "\n")
-        // Skip header
         for _, line := range lines[1:] {
             fields := strings.Fields(line)
             if len(fields) < 10 { continue }
             
-            // State 0A = Listen (TCP). UDP doesn't key on state usually but 07.
-            // Let's just grab listening ports? Or all? User said "ports". usually LISTEN.
-            // TCP: 01 (ESTAB), 0A (LISTEN).
             state := fields[3]
-            if strings.Contains(f, "tcp") && state != "0A" { continue }
+            if strings.Contains(fName, "tcp") && state != "0A" { continue }
             
-            // local_address:port (hex)
-            local := fields[1] // 00000000:0016
+            local := fields[1] 
             parts := strings.Split(local, ":")
             if len(parts) < 2 { continue }
             
@@ -502,7 +504,7 @@ func buildSocketMap() map[string]int {
 }
 
 func getProcessPorts(pid int, inodeMap map[string]int) string {
-    fdDir := fmt.Sprintf("/proc/%d/fd", pid)
+    fdDir := filepath.Join(procFS, strconv.Itoa(pid), "fd")
     files, err := ioutil.ReadDir(fdDir)
     if err != nil { return "" }
     
@@ -510,11 +512,9 @@ func getProcessPorts(pid int, inodeMap map[string]int) string {
     seen := make(map[int]bool)
     
     for _, fd := range files {
-        // Read link target
         target, err := os.Readlink(filepath.Join(fdDir, fd.Name()))
         if err != nil { continue }
         
-        // socket:[12345]
         if strings.HasPrefix(target, "socket:[") {
             inode := strings.TrimSuffix(strings.TrimPrefix(target, "socket:["), "]")
             if port, ok := inodeMap[inode]; ok {
@@ -527,7 +527,6 @@ func getProcessPorts(pid int, inodeMap map[string]int) string {
     }
     sort.Ints(ports)
     
-    // Join
     var sb strings.Builder
     for i, p := range ports {
         if i > 0 { sb.WriteString(",") }
