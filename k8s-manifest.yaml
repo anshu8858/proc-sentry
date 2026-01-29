@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: proc-sentry
+  namespace: monitoring
+  labels:
+    app: proc-sentry
+spec:
+  selector:
+    matchLabels:
+      app: proc-sentry
+  template:
+    metadata:
+      labels:
+        app: proc-sentry
+    spec:
+      hostPID: true # Required to see host processes
+      hostNetwork: true # Optional: use if you want to use the host's IP
+      # If not using hostNetwork, ensure you have a Service defined.
+      containers:
+        - name: proc-sentry
+          image: deziss/proc-sentry:latest
+          imagePullPolicy: Always
+          args: []
+          env:
+            - name: PROCFS_PATH
+              value: "/host/proc"
+            - name: TOP_N
+              value: "50"
+            - name: ENABLE_DISK_IO
+              value: "true"
+            - name: ENABLE_PORTS
+              value: "true"
+            - name: PROC_HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          resources:
+            limits:
+              memory: 64Mi
+              cpu: 100m
+            requests:
+              memory: 32Mi
+              cpu: 10m
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly: true
+            - name: cgroup
+              mountPath: /sys/fs/cgroup
+              readOnly: true
+            - name: passwd
+              mountPath: /etc/passwd
+              readOnly: true
+          securityContext:
+            readOnlyRootFilesystem: true
+            capabilities:
+              add:
+                - SYS_PTRACE
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: cgroup
+          hostPath:
+            path: /sys/fs/cgroup
+        - name: passwd
+          hostPath:
+            path: /etc/passwd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: proc-sentry
+  namespace: monitoring
+  labels:
+    app: proc-sentry
+spec:
+  selector:
+    app: proc-sentry
+  ports:
+    - port: 9105
+      targetPort: 9105
+      name: metrics
+  type: ClusterIP
