@@ -13,6 +13,8 @@ services:
       - /etc/passwd:/etc/passwd:ro
     cap_add:
       - SYS_PTRACE
+    security_opt:
+      - apparmor=unconfined
     environment:
       - PROC_HOSTNAME=${HOSTNAME:-my-host}
       - PROCFS_PATH=/host/proc

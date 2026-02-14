@@ -111,6 +111,16 @@ docker logs proc-sentry
 
 _Expected: `Starting proc-sentry on :9105 ...`_
 
+### 5. AppArmor Ptrace Denied
+
+If you see this in `dmesg` or `journalctl`:
+
+```
+audit: type=1400 apparmor="DENIED" operation="ptrace" profile="docker-default" ...
+```
+
+**Fix**: Add `security_opt: - apparmor=unconfined` to your `docker-compose.yml`, or `--security-opt apparmor=unconfined` to `docker run`.
+
 ## 📦 Deployment
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed installation instructions:

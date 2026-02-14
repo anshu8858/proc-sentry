@@ -7,6 +7,7 @@ Proc-Sentry is designed to be lightweight and easy to deploy in any Linux contai
 - **Host OS**: Linux
 - **Privileges**: Access to `/proc` is required. In Docker/K8s, this usually means mounting the host's `/proc` directory.
 - **Capabilities**: `SYS_PTRACE` is required to inspect other processes.
+- **AppArmor**: On Ubuntu/Debian systems with AppArmor enabled, you must run the container with `apparmor=unconfined` to allow ptrace operations.
 
 ## 2. Quick Start (Docker)
 
@@ -18,6 +19,7 @@ docker run -d \
   --restart always \
   --read-only \
   --cap-add=SYS_PTRACE \
+  --security-opt apparmor=unconfined \
   -v /proc:/host/proc:ro \
   -v /sys/fs/cgroup:/sys/fs/cgroup:ro \
   -v /etc/passwd:/etc/passwd:ro \
@@ -47,6 +49,8 @@ services:
     read_only: true
     cap_add:
       - SYS_PTRACE
+    security_opt:
+      - apparmor=unconfined
     volumes:
       - /proc:/host/proc:ro # Monitor Host Processes
       - /sys/fs/cgroup:/sys/fs/cgroup:ro # Container ID detection
@@ -125,8 +129,16 @@ A comprehensive Grafana dashboard is included (`grafana_dashboard.json`).
 
 ## 8. Troubleshooting
 
-**Error: `permission denied` accessing `/inaccessible/path`**  
-Ensure you are running with `--cap-add=SYS_PTRACE` and that AppArmor is not blocking ptrace. Using `PROCFS_PATH=/host/proc` usually mitigates AppArmor issues related to mounting `/proc` directly.
+**Error: `apparmor="DENIED" operation="ptrace"`**  
+This is the most common issue on Ubuntu/Debian systems. Docker's default AppArmor profile blocks ptrace even with `SYS_PTRACE` capability.  
+**Fix**: Add `--security-opt apparmor=unconfined` to your `docker run` command, or `security_opt: - apparmor=unconfined` in your `docker-compose.yml`.
+
+```
+audit: type=1400 apparmor="DENIED" operation="ptrace" profile="docker-default" ...
+```
+
+**Error: `permission denied` accessing `/proc/[pid]/*`**  
+Ensure you are mounting the host's `/proc` to `/host/proc:ro` and setting `PROCFS_PATH=/host/proc`.
 
 **Error: `read-only file system`**  
 This is expected if you mounted volumes `:ro`. The application is designed to run with a read-only root file system. It writes no files.
